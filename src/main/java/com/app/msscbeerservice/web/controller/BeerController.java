@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -31,22 +32,31 @@ public class BeerController {
     public ResponseEntity<BeerPagedList> listBeers(@RequestParam(value = "pageNumber", required = false) Integer pageNumber,
                                                    @RequestParam(value = "pageSize", required = false) Integer pageSize,
                                                    @RequestParam(value = "beerName", required = false) String beerName,
-                                                   @RequestParam(value = "beerStyle", required = false) BeerStyleEnum beerStyle) {
-        if(pageNumber == null || pageNumber < 0) {
+                                                   @RequestParam(value = "beerStyle", required = false) BeerStyleEnum beerStyle,
+                                                   @RequestParam(value = "showInventoryOnHand", required = false) Boolean showInventoryOnHand) {
+        if(Objects.isNull(showInventoryOnHand)) {
+            showInventoryOnHand = false;
+        }
+
+        if(Objects.isNull(pageNumber) || pageNumber < 0) {
             pageNumber = DEFAULT_PAGE_NUMBER;
         }
 
-        if(pageSize == null || pageSize < 1) {
+        if(Objects.isNull(pageSize) || pageSize < 1) {
             pageSize = DEFAULT_PAGE_SIZE;
         }
-        BeerPagedList list = beerService.listBeers(beerName, beerStyle, PageRequest.of(pageNumber, pageSize));
+        BeerPagedList list = beerService.listBeers(beerName, beerStyle, PageRequest.of(pageNumber, pageSize), showInventoryOnHand);
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @GetMapping("/{beerId}")
-    public ResponseEntity<BeerDto> getBeerById(@PathVariable UUID beerId) {
+    public ResponseEntity<BeerDto> getBeerById(@PathVariable UUID beerId,
+                                               @RequestParam(value = "showInventoryOnHand", required = false) Boolean showInventoryOnHand) {
         //return new ResponseEntity<>(BeerDto.builder().build(), HttpStatus.OK);
-        return new ResponseEntity<>(beerService.getBeerById(beerId), HttpStatus.OK);
+        if(Objects.isNull(showInventoryOnHand)) {
+            showInventoryOnHand = false;
+        }
+        return new ResponseEntity<>(beerService.getBeerById(beerId, showInventoryOnHand), HttpStatus.OK);
     }
 
     @PostMapping

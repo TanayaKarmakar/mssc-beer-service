@@ -7,7 +7,9 @@ import com.app.msscbeerservice.web.mappers.BeerMapper;
 import com.app.msscbeerservice.web.model.BeerDto;
 import com.app.msscbeerservice.web.model.BeerPagedList;
 import com.app.msscbeerservice.web.model.BeerStyleEnum;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,7 @@ import java.util.stream.Collectors;
  * @project mssc-beer-service
  */
 @Service
+@Slf4j
 public class BeerServiceImpl implements BeerService {
     @Autowired
     private BeerRepository beerRepository;
@@ -28,9 +31,14 @@ public class BeerServiceImpl implements BeerService {
     @Autowired
     private BeerMapper beerMapper;
 
+    @Cacheable(cacheNames = "beerCache", key = "#beerId", condition = "#showInventoryOnHand == false")
     @Override
-    public BeerDto getBeerById(UUID beerId) {
-        return beerMapper.beerToBeerDto(beerRepository.findById(beerId).orElseThrow(() -> new NotFoundException("Item Not found")));
+    public BeerDto getBeerById(UUID beerId, Boolean showInventoryOnHand) {
+        if(showInventoryOnHand) {
+            return beerMapper.beerToBeerDtoWithInventory(beerRepository.findById(beerId).orElseThrow(() -> new NotFoundException("Item Not found")));
+        } else {
+            return beerMapper.beerToBeerDto(beerRepository.findById(beerId).orElseThrow(() -> new NotFoundException("Item Not found")));
+        }
     }
 
     @Override
@@ -48,7 +56,9 @@ public class BeerServiceImpl implements BeerService {
     }
 
     @Override
-    public BeerPagedList listBeers(String beerName, BeerStyleEnum beerStyle, PageRequest pageRequest) {
+    @Cacheable(cacheNames = "beerListCache", condition = "#showInventoryOnHand == false")
+    public BeerPagedList listBeers(String beerName, BeerStyleEnum beerStyle, PageRequest pageRequest, Boolean showInventoryOnHand) {
+        log.info("Fetching beer has started");
         BeerPagedList beerList;
         Page<Beer> beerPage;
 
@@ -64,15 +74,28 @@ public class BeerServiceImpl implements BeerService {
             beerPage = beerRepository.findAll(pageRequest);
         }
 
-        beerList = new BeerPagedList(beerPage
-                .getContent()
-                .stream()
-                .map(beerMapper::beerToBeerDtoWithInventory)
-                .collect(Collectors.toList()),
-                PageRequest
-                        .of(beerPage.getPageable().getPageNumber(),
-                                beerPage.getPageable().getPageSize()),
-                beerPage.getTotalElements());
+        if(showInventoryOnHand) {
+            beerList = new BeerPagedList(beerPage
+                    .getContent()
+                    .stream()
+                    .map(beerMapper::beerToBeerDtoWithInventory)
+                    .collect(Collectors.toList()),
+                    PageRequest
+                            .of(beerPage.getPageable().getPageNumber(),
+                                    beerPage.getPageable().getPageSize()),
+                    beerPage.getTotalElements());
+        } else {
+            beerList = new BeerPagedList(beerPage
+                    .getContent()
+                    .stream()
+                    .map(beerMapper::beerToBeerDto)
+                    .collect(Collectors.toList()),
+                    PageRequest
+                            .of(beerPage.getPageable().getPageNumber(),
+                                    beerPage.getPageable().getPageSize()),
+                    beerPage.getTotalElements());
+        }
+
 
         return beerList;
     }

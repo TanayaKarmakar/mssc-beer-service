@@ -12,11 +12,11 @@ import java.util.UUID;
  * @project mssc-beer-service
  */
 public interface BeerService {
-    BeerDto getBeerById(UUID beerId);
+    BeerDto getBeerById(UUID beerId, Boolean showInventoryOnHand);
 
     BeerDto saveNewBeer(BeerDto beerDto);
 
     BeerDto updateBeer(BeerDto beerDto);
 
-    BeerPagedList listBeers(String beerName, BeerStyleEnum beerStyle, PageRequest of);
+    BeerPagedList listBeers(String beerName, BeerStyleEnum beerStyle, PageRequest of, Boolean showInventoryOnHand);
 }
