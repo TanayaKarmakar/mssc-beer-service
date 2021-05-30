@@ -1,4 +1,4 @@
-package com.app.msscbeerservice.events;
+package com.app.common.events;
 
 import com.app.msscbeerservice.web.model.BeerDto;
 import lombok.NoArgsConstructor;
@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
  * @project mssc-beer-service
  */
 @NoArgsConstructor
-public class NewInventoryEvent extends BeerEvent{
-    public NewInventoryEvent(BeerDto beerDto) {
+public class BrewBeerEvent extends BeerEvent{
+    public BrewBeerEvent(BeerDto beerDto) {
         super(beerDto);
     }
 }

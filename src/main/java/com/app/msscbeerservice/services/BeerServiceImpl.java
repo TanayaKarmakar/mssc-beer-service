@@ -1,6 +1,6 @@
 package com.app.msscbeerservice.services;
 
-import com.app.msscbeerservice.common.exception.NotFoundException;
+import com.app.common.exception.NotFoundException;
 import com.app.msscbeerservice.domain.Beer;
 import com.app.msscbeerservice.repositories.BeerRepository;
 import com.app.msscbeerservice.web.mappers.BeerMapper;
