@@ -1,6 +1,6 @@
 package com.app.msscbeerservice.services.inventory;
 
-import com.app.common.models.BeerInventoryDto;
+import com.app.common.models.inventory.BeerInventoryDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
