@@ -1,4 +1,4 @@
-package com.app.msscbeerservice.web.model;
+package com.app.common.models;
 
 /**
  * @author t0k02w6 on 07/05/21

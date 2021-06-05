@@ -3,7 +3,7 @@ package com.app.msscbeerservice.web.mappers;
 
 import com.app.msscbeerservice.domain.Beer;
 import com.app.msscbeerservice.services.inventory.BeerInventoryService;
-import com.app.msscbeerservice.web.model.BeerDto;
+import com.app.common.models.BeerDto;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**

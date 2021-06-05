@@ -1,9 +1,9 @@
 package com.app.msscbeerservice.web.controller;
 
 import com.app.msscbeerservice.services.BeerService;
-import com.app.msscbeerservice.web.model.BeerDto;
-import com.app.msscbeerservice.web.model.BeerPagedList;
-import com.app.msscbeerservice.web.model.BeerStyleEnum;
+import com.app.common.models.BeerDto;
+import com.app.common.models.BeerPagedList;
+import com.app.common.models.BeerStyleEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
