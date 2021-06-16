@@ -1,10 +1,12 @@
 package com.app.msscbeerservice.services.inventory;
 
 import com.app.common.models.inventory.BeerInventoryDto;
+import com.app.common.util.URIConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -20,10 +22,10 @@ import java.util.UUID;
  * @project mssc-beer-service
  */
 @Slf4j
+@Profile("!local-discovery")
 @Service
 @ConfigurationProperties(prefix = "sfg.brewery", ignoreUnknownFields = true)
 public class BeerInventoryServiceImpl implements BeerInventoryService{
-    private static final String INVENTORY_PATH = "/api/v1/beer/{beerId}/inventory";
 
     @Autowired
     private RestTemplate restTemplate;
@@ -36,7 +38,7 @@ public class BeerInventoryServiceImpl implements BeerInventoryService{
         log.debug("Calling inventory service");
         ParameterizedTypeReference<List<BeerInventoryDto>> typeRef = new ParameterizedTypeReference<>() {};
 
-        ResponseEntity<List<BeerInventoryDto>> responseEntity = restTemplate.exchange(beerInventoryServiceHost + INVENTORY_PATH,
+        ResponseEntity<List<BeerInventoryDto>> responseEntity = restTemplate.exchange(beerInventoryServiceHost + URIConstants.INVENTORY_PATH,
                 HttpMethod.GET,
                 null,
                 typeRef, beerId);
