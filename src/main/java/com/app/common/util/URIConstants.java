@@ -6,4 +6,5 @@ package com.app.common.util;
  */
 public class URIConstants {
     public static final String INVENTORY_PATH = "/api/v1/beer/{beerId}/inventory";
+    public static final String INVENTORY_FAILOVER = "/inventory-failover";
 }
