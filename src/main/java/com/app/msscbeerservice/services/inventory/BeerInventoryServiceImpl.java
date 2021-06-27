@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -32,6 +33,18 @@ public class BeerInventoryServiceImpl implements BeerInventoryService{
 
     @Value("${sfg.brewery.beer-inventory-service-host}")
     private String beerInventoryServiceHost;
+
+    @Value("${sfg.brewery.inventory-user}")
+    private String inventoryUser;
+
+    @Value("${sfg.brewery.inventory-password}")
+    private String inventoryPassword;
+
+    public BeerInventoryServiceImpl(RestTemplateBuilder restTemplateBuilder) {
+        this.restTemplate = restTemplateBuilder
+                .basicAuthentication(inventoryUser, inventoryPassword)
+                .build();
+    }
 
     @Override
     public Integer getOnhandInventory(UUID beerId) {

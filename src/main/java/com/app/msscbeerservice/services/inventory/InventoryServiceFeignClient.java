@@ -2,6 +2,7 @@ package com.app.msscbeerservice.services.inventory;
 
 import com.app.common.models.inventory.BeerInventoryDto;
 import com.app.common.util.URIConstants;
+import com.app.msscbeerservice.config.FeignClientConfig;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,9 +15,9 @@ import java.util.UUID;
  * @author t0k02w6 on 16/06/21
  * @project mssc-beer-service
  */
-@FeignClient(name = "beer-inventory-service", fallback = BeerInventoryServiceFeignFailover.class)
+@FeignClient(name = "beer-inventory-service", fallback = BeerInventoryServiceFeignFailover.class, configuration = FeignClientConfig.class)
 public interface InventoryServiceFeignClient {
 
     @GetMapping(URIConstants.INVENTORY_PATH)
-    ResponseEntity<List<BeerInventoryDto>> getOnhandInventory(@PathVariable UUID beerId);
+    ResponseEntity<List<BeerInventoryDto>> getOnhandInventory(@PathVariable("beerId") UUID beerId);
 }
